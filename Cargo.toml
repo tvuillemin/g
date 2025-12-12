@@ -2,6 +2,10 @@
 name = "g"
 version = "0.1.0"
 edition = "2024"
+authors = ["Thibaut Vuillemin <thibaut.vuillemin@icloud.com>"]
+description = "A Git wrapper"
+license = "MIT"
+repository = "https://github.com/tvuillemin/g"
 
 [dependencies]
 
