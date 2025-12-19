@@ -14,6 +14,8 @@ fn main() {
     let git_args: Vec<&str> = match str_args {
         ["ca"] => vec!["commit", "--amend"],
         ["co"] => vec!["checkout"],
+        ["pf"] => vec!["push", "--force-with-lease"],
+        ["pr"] => vec!["pull", "--rebase"],
         ["st"] => vec!["status"],
         ["log"] => vec![
             "log",
