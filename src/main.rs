@@ -31,7 +31,29 @@ fn run_git(args: &[&str]) {
 }
 
 fn branch_update() {
+    let trunk = get_trunk();
+
     run_git(&["fetch", "-p"]);
-    run_git(&["rebase", "origin/master"]);
+    run_git(&["rebase", &format!("origin/{}", trunk)]);
     run_git(&["push", "--force-with-lease", "--no-verify"]);
+}
+
+
+fn get_trunk() -> String {
+    let output = Command::new("git")
+        .args(["symbolic-ref", "refs/remotes/origin/HEAD"])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null()) // silence les erreurs si non configuré
+        .output();
+
+    if let Ok(out) = output {
+        if out.status.success() {
+            let branch = String::from_utf8_lossy(&out.stdout).trim().to_string();
+            if branch.starts_with("refs/remotes/origin/") {
+                return branch.strip_prefix("refs/remotes/origin/").unwrap().to_string();
+            }
+        }
+    }
+
+    "master".to_string() // Fallback to "master" if unable to determine
 }
