@@ -1,25 +1,32 @@
 use std::process::{Command, Stdio};
 
+pub fn get_current_branch() -> String {
+    let cmd = Command::new("git")
+        .args(["rev-parse", "--abbrev-ref", "HEAD"])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .output()
+        .unwrap();
+
+    let current_branch = String::from_utf8_lossy(&cmd.stdout).trim().to_string();
+
+    current_branch
+}
+
 pub fn get_trunk() -> String {
-    let output = Command::new("git")
+    let cmd = Command::new("git")
         .args(["symbolic-ref", "refs/remotes/origin/HEAD"])
         .stdout(Stdio::piped())
-        .stderr(Stdio::null()) // silence les erreurs si non configuré
-        .output();
+        .stderr(Stdio::null())
+        .output()
+        .unwrap();
 
-    if let Ok(out) = output {
-        if out.status.success() {
-            let branch = String::from_utf8_lossy(&out.stdout).trim().to_string();
-            if branch.starts_with("refs/remotes/origin/") {
-                return branch
-                    .strip_prefix("refs/remotes/origin/")
-                    .unwrap()
-                    .to_string();
-            }
-        }
-    }
+    let branch_full_name = String::from_utf8_lossy(&cmd.stdout).trim().to_string();
 
-    "master".to_string() // Fallback to "master" if unable to determine
+    branch_full_name
+        .strip_prefix("refs/remotes/origin/")
+        .unwrap()
+        .to_string()
 }
 
 pub fn run_git(args: &[&str]) {
