@@ -7,6 +7,7 @@ fn main() {
 
     match args_str.as_slice() {
         [] => run_git(&["--help"]),
+        ["bu"] => branch_update(),
         ["ca"] => run_git(&["commit", "--amend"]),
         ["co"] => run_git(&["checkout"]),
         ["log"] => run_git(&["log", "--graph", "--oneline"]),
@@ -27,4 +28,10 @@ fn run_git(args: &[&str]) {
     if !status.success() {
         std::process::exit(status.code().unwrap_or(1));
     }
+}
+
+fn branch_update() {
+    run_git(&["fetch", "-p"]);
+    run_git(&["rebase", "origin/master"]);
+    run_git(&["push", "--force-with-lease", "--no-verify"]);
 }
