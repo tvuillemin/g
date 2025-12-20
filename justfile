@@ -6,3 +6,4 @@ lint:
 
 install-system-deps:
     brew install git
+    brew install prek
