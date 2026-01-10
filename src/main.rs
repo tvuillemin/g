@@ -28,6 +28,7 @@ fn main() {
         "pm" => post_merge(),
         "pr" => run_git(&["pull", "--rebase"]),
         "st" => run_git(&["status"]),
+        "tr" => run_git(&["switch", get_trunk().as_str()]),
         _ => {
             let mut git_args = vec![main_arg.as_str()];
             git_args.extend(extra_args.iter().map(|s| s.as_str()));
